@@ -5,7 +5,6 @@
     <div class="container">
         <div class="row">
             <div class="col">
-
                 <x-card cardTitle="Ingresa la URL">
                     @section('card-body')
                         <form>
@@ -18,8 +17,9 @@
                         </form>
                     @endsection
                 </x-card>
-
             </div>
         </div>
     </div>
-@stop
+@endsection
+
+

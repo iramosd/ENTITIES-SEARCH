@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use Spatie\Browsershot\Browsershot;
+
 class EntityService
 {
     public function __construct() {}
 
-    public function SearchEntities(string $url)
+    public function SearchEntities(string $url, string $keyword = '')
     {
         $html = $this->getHtml($url);
         $plainTextBody = $this->extractPlainTextBody($html);
@@ -26,7 +26,7 @@ class EntityService
 
     private function getBody(string $html): string
     {
-        $dom = new \DOMDocument();
+        $dom = new \DOMDocument;
         libxml_use_internal_errors(true);
         $dom->loadHTML($html);
         libxml_clear_errors();
@@ -42,7 +42,7 @@ class EntityService
         $body = $this->getBody($html);
 
         if ($body) {
-            $bodyContent = preg_replace( ['/<\/?body[^>]*>/', '/[\n\t\r\x{A0}]+/u'],
+            $bodyContent = preg_replace(['/<\/?body[^>]*>/', '/[\n\t\r\x{A0}]+/u'],
                 ['', ' '],
                 $body);
         }

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from google.cloud import language_v2
+import json
 import os
 import sys
 
@@ -35,26 +36,29 @@ def sample_analyze_entities(text_content: str = "") -> list:
     )
 
     for entity in response.entities:
-        json_response.append(entity)
-        #print(f"Representative name for the entity: {entity.name}")
+        entity_body = {
+                "name": entity.name,
+                "type_": entity.type_,
+                "metadata": [],
+                "mentions": []
+        }
 
-        #print(f"Entity type: {language_v2.Entity.Type(entity.type_).name}")
+        entity_body["metadata"].append(dict(entity.metadata))
 
-        #for metadata_name, metadata_value in entity.metadata.items():
-            #print(f"{metadata_name}: {metadata_value}")
+        for mention in entity.mentions:
+            entity_body["mentions"].append({
+                "content": mention.text.content,
+                "begin_offset": mention.text.begin_offset,
+                "probability": mention.probability
+            })
 
-        #for mention in entity.mentions:
-            #print(f"Mention text: {mention.text.content}")
+        json_response.append(entity_body)
 
-            #print(f"Mention type: {language_v2.EntityMention.Type(mention.type_).name}")
-
-            #print(f"Probability score: {mention.probability}")
-
-    print (json_response)
+    print(json.dumps(json_response, ensure_ascii=False, indent=4))
 
 # %%
 
 if (len(arguments) > 1 and len(arguments[1]) > 0):
     sample_analyze_entities(plain_text)
 else:
-    print("No arguments found")
+    print([])

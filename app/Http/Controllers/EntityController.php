@@ -12,6 +12,8 @@ class EntityController extends Controller
 
     public function __invoke()
     {
-        dd($this->service->searchEntities('https://www.santanderconsumer.es/prestamos/prestamos-de-ocasion.html', 'Carl'));
+        return response()->json([
+            'data' => $this->service->getEntities('https://www.santanderconsumer.es/prestamos/prestamos-de-ocasion.html', 'Carl')
+        ]);
     }
 }

@@ -12,15 +12,13 @@ class EntityService
         $this->scriptPath = base_path().'/scripts';
     }
 
-    public function SearchEntities(string $url, string $keyWord = '')
+    public function getEntities(string $url, string $keyWord = '')
     {
         $html = $this->getHtml($url);
         $plainTextBody = $this->extractPlainTextBody($html);
         file_put_contents($this->scriptPath.'/plainText.txt', $plainTextBody);
 
-        $this->getGoogleEntities($keyWord);
-
-        return $plainTextBody;
+        return $this->getGoogleEntities($keyWord);
     }
 
     private function getHtml(string $url): string
@@ -57,12 +55,12 @@ class EntityService
         return strip_tags($bodyContent);
     }
 
-    private function getGoogleEntities(string $keyWord)
+    private function getGoogleEntities(string $keyWord): array
     {
         $filePath = $this->scriptPath.'/GoogleEntities.py';
         $result = Process::run("python3 $filePath $keyWord");
-        dd($result->output());
-        dd(json_decode(json_encode($result->output())));
-        dd($result->output(), $result->errorOutput());
+        if($result->failed()) return [];
+
+        return json_decode($result->output(), true);
     }
 }

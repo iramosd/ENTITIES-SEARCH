@@ -58,7 +58,4 @@ def sample_analyze_entities(text_content: str = "") -> list:
 
 # %%
 
-if (len(arguments) > 1 and len(arguments[1]) > 0):
-    sample_analyze_entities(plain_text)
-else:
-    print([])
+sample_analyze_entities(plain_text)

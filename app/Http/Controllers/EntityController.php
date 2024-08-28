@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EntityRequest;
 use App\Services\EntityService;
 
 class EntityController extends Controller
@@ -10,10 +11,12 @@ class EntityController extends Controller
         protected readonly EntityService $service
     ) {}
 
-    public function __invoke()
+    public function __invoke(EntityRequest $request)
     {
+        $data = $request->validated();
+
         return response()->json([
-            'data' => $this->service->getEntities('https://www.santanderconsumer.es/prestamos/prestamos-de-ocasion.html', 'Carl')
+            'data' => $this->service->getEntities($data['url'], $data->keyWord ?? ''),
         ]);
     }
 }

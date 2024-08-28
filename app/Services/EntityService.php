@@ -2,16 +2,23 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Process;
 use Spatie\Browsershot\Browsershot;
 
 class EntityService
 {
-    public function __construct() {}
+    private string $scriptPath;
+    public function __construct() {
+        $this->scriptPath = base_path().'/scripts';
+    }
 
-    public function SearchEntities(string $url, string $keyword = '')
+    public function SearchEntities(string $url, string $keyWord = '')
     {
         $html = $this->getHtml($url);
         $plainTextBody = $this->extractPlainTextBody($html);
+        file_put_contents($this->scriptPath.'/plainText.txt', $plainTextBody);
+
+        $this->getGoogleEntities($keyWord);
 
         return $plainTextBody;
     }
@@ -48,5 +55,12 @@ class EntityService
         }
 
         return strip_tags($bodyContent);
+    }
+
+    private function getGoogleEntities(string $keyWord)
+    {
+        $filePath = $this->scriptPath.'/GoogleEntities.py';
+        $result = Process::run("python3 $filePath agua");
+        dd($result->output());
     }
 }

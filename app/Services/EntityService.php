@@ -13,7 +13,7 @@ class EntityService
         $html = $this->getHtml($url);
         $plainTextBody = $this->extractPlainTextBody($html);
 
-        dd($plainTextBody);
+        return $plainTextBody;
     }
 
     private function getHtml(string $url): string

@@ -60,7 +60,9 @@ class EntityService
     private function getGoogleEntities(string $keyWord)
     {
         $filePath = $this->scriptPath.'/GoogleEntities.py';
-        $result = Process::run("python3 $filePath agua");
+        $result = Process::run("python3 $filePath $keyWord");
         dd($result->output());
+        dd(json_decode(json_encode($result->output())));
+        dd($result->output(), $result->errorOutput());
     }
 }

@@ -31,12 +31,27 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <table id="entities-table" class="table table-striped table-hover d-none" style="width:60%">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 @endsection
 
 <script>
 
     function getEntities() {
+        $("#entities-table").addClass("d-none");
         $("#error-message").addClass("d-none");
 
         if($( "#url" ).val().trim() === "") {
@@ -47,24 +62,31 @@
         $("#spinner-container").removeClass("visually-hidden");
         $("#submit-button").addClass("disabled");
 
-        $.ajax({
-            url: '/api/entities',
-            method: 'get',
-            dataType: 'json',
-            data: {
-                url: $( "#url" ).val(),
+        $('#entities-table').DataTable( {
+            ajax: {
+                url: '/api/entities',
+                method: 'get',
+                dataType: 'json',
+                data: {
+                    url: $( "#url" ).val(),
+                },
+                dataSrc: function (data) {
+                    return data.data;
+                },
+                error: function(e) {
+                    console.log(e);
+                },
+                complete: function() {
+                    $("#spinner-container").addClass("visually-hidden");
+                    $("#submit-button").removeClass("disabled");
+                    $("#entities-table").removeClass("d-none").addClass("display");
+                }
             },
-            success: function(data) {
-                console.log(data);
-            },
-            error: function(e) {
-                console.log(e);
-            },
-            complete: function() {
-                $("#spinner-container").addClass("visually-hidden");
-                $("#submit-button").removeClass("disabled");
-            }
-        });
+            columns: [
+                { data: 'name' },
+                { data: 'type_' },
+            ]
+        } );
     }
 </script>
 
